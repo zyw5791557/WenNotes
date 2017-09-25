@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>巧用margin/padding的百分比值实现高度自适应</title>
+<!--defaultCSS-->
+</head>
+
+<body>
+<div id="WizHtmlContentId">
+
+<!--WizHtmlContentBegin--><div><p style="margin:1.5em 0px;color:rgb(51, 51, 51);font-family:-apple-system, &quot;Helvetica Neue&quot;, Helvetica, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;WenQuanYi Micro Hei&quot;, &quot;Microsoft Yahei&quot;, sans-serif;font-size:0.875rem;font-style:normal;font-weight:normal;text-align:start;text-indent:0px;background-color:rgb(255, 255, 255);">本文依赖于一个基础却又容易混淆的css知识点：当margin/padding取形式为<code style="font-family:&quot;Source Code Pro&quot;, Consolas, Menlo, Monaco, &quot;Courier New&quot;, monospace;font-size:0.93rem;padding:2px 4px;color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">百分比</code>的值时，无论是left/right，还是<code style="font-family:&quot;Source Code Pro&quot;, Consolas, Menlo, Monaco, &quot;Courier New&quot;, monospace;font-size:0.93rem;padding:2px 4px;color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">top/bottom</code>，都是以<code style="font-family:&quot;Source Code Pro&quot;, Consolas, Menlo, Monaco, &quot;Courier New&quot;, monospace;font-size:0.93rem;padding:2px 4px;color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">父元素的width</code>为参照物的！<br>也许你会说，left/right以<code style="font-family:&quot;Source Code Pro&quot;, Consolas, Menlo, Monaco, &quot;Courier New&quot;, monospace;font-size:0.93rem;padding:2px 4px;color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">父元素的width</code>为参照物好理解，但是<code style="font-family:&quot;Source Code Pro&quot;, Consolas, Menlo, Monaco, &quot;Courier New&quot;, monospace;font-size:0.93rem;padding:2px 4px;color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">top/bottom</code>为什么也是以<code style="font-family:&quot;Source Code Pro&quot;, Consolas, Menlo, Monaco, &quot;Courier New&quot;, monospace;font-size:0.93rem;padding:2px 4px;color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">父元素的width</code>为参照物的呢？网上众说纷纭，关键还是看<a href="https://drafts.csswg.org/css-box/#the-margin-properties" target="_blank" style="color:rgb(0, 154, 97);text-decoration:none;">W3C的规范</a>：</p><blockquote style="padding:10px 20px;margin:1.5em 0px;font-size:0.875rem;background:rgb(246, 246, 246);color:rgb(85, 85, 85);font-family:-apple-system, &quot;Helvetica Neue&quot;, Helvetica, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;WenQuanYi Micro Hei&quot;, &quot;Microsoft Yahei&quot;, sans-serif;font-style:normal;font-weight:normal;text-align:start;text-indent:0px;"><p style="margin:0px 0px 1.5em;">Note that in a horizontal flow, percentages on ‘margin-top’ and ‘margin-bottom’ are relative to the width of the containing block, not the height (and in vertical flow, ‘margin-left’ and ‘margin-right’ are relative to the height, not the width).</p><p style="margin:1.5em 0px 0px;">Note that percentages on ‘padding-top’ and ‘padding-bottom’ are relative to the width of the containing block, not the height (at least in a horizontal flow; in a vertical flow they are relative to the height).</p></blockquote><br></div><div><br></div><div>详细 -&nbsp;<a href="https://segmentfault.com/a/1190000004231995">https://segmentfault.com/a/1190000004231995</a>&nbsp;&nbsp;</div><div><br></div><div><br></div><!--WizHtmlContentEnd-->
+
+</div>
+</body>
+
+</html>

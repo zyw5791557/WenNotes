@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>彻底解决 webpack 打包文件体积过大</title>
+<!--defaultCSS-->
+</head>
+
+<body>
+<div id="WizHtmlContentId">
+
+<!--WizHtmlContentBegin--><div><a href="http://www.jianshu.com/p/a64735eb0e2b">http://www.jianshu.com/p/a64735eb0e2b</a>&nbsp;&nbsp;</div><div> <div><div><p>webpack 把我们所有的文件都打包成一个 JS 文件，这样即使你是小项目，打包后的文件也会非常大。下面就来讲下如何从多个方面进行优化。</p><h2>去除不必要的插件</h2><p>刚开始用 webpack 的时候，开发环境和生产环境用的是同一个 webpack 配置文件，导致生产环境打包的 JS 文件包含了一大堆没必要的插件，比如 <code>HotModuleReplacementPlugin</code>, <code>NoErrorsPlugin</code>... 这时候不管用什么优化方式，都没多大效果。所以，如果你打包后的文件非常大的话，先检查下是不是包含了这些插件。</p><h2>提取第三方库</h2><p>像 react 这个库的核心代码就有 627 KB，这样和我们的源代码放在一起打包，体积肯定会很大。所以可以在 webpack 中设置</p><pre class="hljs less"><code class="less">{
+  <span class="hljs-attribute">entry</span>: {
+   <span class="hljs-attribute">bundle</span>: <span class="hljs-string">'app'</span>
+    <span class="hljs-attribute">vendor</span>: [<span class="hljs-string">'react'</span>]
+  }
+
+  <span class="hljs-attribute">plugins</span>: {
+    new webpack.optimize.CommonsChunkPlugin(<span class="hljs-string">'vendor'</span>,  <span class="hljs-string">'vendor.js'</span>)
+  }
+}</code></pre><p>这样打包之后就会多出一个 <code>vendor.js</code> 文件，之后在引入我们自己的代码之前，都要先引入这个文件。比如在 <code>index.html</code> 中</p><pre class="hljs xml"><code class="xml"> <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"/build/vendor.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"/build/bundle.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><p>除了这种方式之外，还可以通过引用外部文件的方式引入第三方库，比如像下面的配置</p><pre class="hljs css"><code class="css">{
+  <span class="hljs-attribute">externals</span>: {
+     <span class="hljs-string">'react'</span>: <span class="hljs-string">'React'</span>
+  }
+}</code></pre><p><code>externals</code> 对象的 key 是给 <code>require</code> 时用的，比如 <code>require('react')</code>，对象的 value 表示的是如何在 global 中访问到该对象，这里是 <code>window.React</code>。这时候 <code>index.html</code> 就变成下面这样</p><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"//cdn.bootcss.com/react/0.14.7/react.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"/build/bundle.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><p><del>当然，个人更推荐第一种方式</del>。</p><p>目前推荐用 <a href="http://www.jianshu.com/p/a5b3c2284bb6" target="_blank">DLL</a> 的方式提取第三方库。</p><h2>代码压缩</h2><p>webpack 自带了一个压缩插件 <a href="https://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin" target="_blank">UglifyJsPlugin</a>，只需要在配置文件中引入即可。</p><pre class="hljs css"><code class="css">{
+  <span class="hljs-attribute">plugins</span>: [
+    new webpack.optimize.<span class="hljs-built_in">UglifyJsPlugin</span>({
+      compress: {
+        warnings: false
+      }
+    })
+  ]
+}</code></pre><p>加入了这个插件之后，编译的速度会明显变慢，所以一般只在生产环境启用。</p><p>另外，服务器端还可以开启 gzip 压缩，优化的效果更明显。</p><h2>代码分割</h2><p>什么是代码分割呢？我们知道，一般加载一个网页都会把全部的 js 代码都加载下来。但是对于 web app 来说，我们更想要的是只加载当前 UI 的代码，没有点击的部分不加载。</p><p>看起来好像挺麻烦，但是通过 webpack 的 <a href="https://webpack.github.io/docs/code-splitting.html" target="_blank">code split</a> 以及配合 <a href="https://github.com/reactjs/react-router" target="_blank">react router</a> 就可以方便实现。具体的例子可以看下 react router 的官方示例 <a href="https://github.com/reactjs/react-router/tree/master/examples/huge-apps" target="_blank">huge apps</a>。不过这里还是讲下之前配置踩过的坑。</p><p><code>code split</code> 是<a href="https://webpack.github.io/docs/code-splitting.html#es6-modules" target="_blank">不支持</a> ES6 的模块系统的，所以在导入和导出的时候千万要注意，特别是导出。如果你导出组件的时候用 ES6 的方式，这时候不管导入是用 CommomJs 还是 AMD，都会失败，而且还不会报错！</p><p>当然会踩到这个坑也是因为我刚刚才用 NodeJS，而且一入门就是用 ES6 的风格。除了这个之外，还有一点也要注意，在生产环境的 webpack 配置文件中，要加上 <code>publicPath</code></p><pre class="hljs css"><code class="css"><span class="hljs-selector-tag">output</span>: {
+    <span class="hljs-attribute">path</span>: xxx,
+    publicPath: yyy,
+    filename: <span class="hljs-string">'bundle.js'</span>
+}</code></pre><p>不然的话，webpack 在加载 chunk 的时候，路径会出错。</p><h2>设置缓存</h2><p>开始这个小节之前，可以先看下大神的一篇文章：<a href="https://github.com/fouber/blog/issues/6" target="_blank">大公司里怎样开发和部署前端代码</a>。</p><p>对于静态文件，第一次获取之后，文件内容没改变的话，浏览器直接读取缓存文件即可。那如果缓存设置过长，文件要更新怎么办呢？嗯，以文件内容的 MD5 作为文件名就是一个不错的解决方案。来看下用 webpack 应该怎样实现</p><pre class="hljs css"><code class="css"><span class="hljs-selector-tag">output</span>: {
+    <span class="hljs-attribute">path</span>: xxx,
+    publicPath: yyy,
+    filename: <span class="hljs-string">'[name]-[chunkhash:6].js'</span>
+}</code></pre><p>打包后的文件名加入了 hash 值</p><pre class="hljs coffeescript"><code class="coffeescript">const bundler = webpack(config)
+
+bundler.run(<span class="hljs-function"><span class="hljs-params">(err, stats)</span> =&gt;</span> {
+  let assets = stats.toJson().assets
+  let name
+
+  <span class="hljs-keyword">for</span> (let i = <span class="hljs-number">0</span>; i &lt; assets.length; i++) {
+    <span class="hljs-keyword">if</span> (assets[i].name.startsWith(<span class="hljs-string">'main'</span>)) {
+      name = assets[i].name
+      <span class="hljs-keyword">break</span>
+    }
+  }
+
+  fs.stat(config.buildTemplatePath, <span class="hljs-function"><span class="hljs-params">(err, stats)</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (err) {
+      fs.mkdirSync(config.buildTemplatePath)
+    }
+
+    writeTemplate(name)
+  })
+})</code></pre><p>手动调用 webpack 的 API，获取打包后的文件名，通过 <code>writeTemplate</code> 更新 html 代码。完整代码猛戳 <a href="https://gist.github.com/clinyong/b28ff4a8fa7906d01723" target="_blank">gitst</a>。</p><p>这样子，我们就可以把文件的缓存设置得很长，而不用担心更新问题。</p></div><br><br>作者：clinyong<br>链接：http://www.jianshu.com/p/a64735eb0e2b<br>來源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</div></div><div><div><div><p></p></div></div></div><!--WizHtmlContentEnd-->
+
+</div>
+</body>
+
+</html>

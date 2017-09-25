@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>跨域问题的解决</title>
+<!--defaultCSS-->
+</head>
+
+<body>
+<div id="WizHtmlContentId">
+
+<!--WizHtmlContentBegin-->1. 让后台设置CROS。(允许跨域访问)<div><br></div><div>2. 用jsonp进行跨域请求</div><div><br></div><div><span data-wiz-span="data-wiz-span" style="color: rgb(255, 0, 0);"><b><span data-wiz-span="data-wiz-span" style="font-size: 1.333rem;">3.重点</span></b></span></div><div><br></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b>通过服务器反向代理（Nginx或Apache），如果是Vue-cli则自带反向代理功能</b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b><br></b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b>配置如下</b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b><br></b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b>proxyConfig.js</b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b><br></b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><b><img src="跨域问题的解决_files/a3031d55-5cce-4da0-b5e1-bffcb24772a4.jpg" border="0"><br><br>index.js</b></span></font></div><div><font color="#ff0000"><span style="font-size: 19.995px; line-height: 31.992px;"><img src="跨域问题的解决_files/d61e88e1-984f-42e1-9c36-efa9ef2e4c39.png" border="0"><div>&nbsp;<img src="跨域问题的解决_files/1686d3e4-797d-4ced-9e5a-d32c4213ccbb.png" border="0">&nbsp; &nbsp; &nbsp;// 把原来的{} 改为这个，推荐使用外部文件导入。<div>&nbsp;</div></div><b><br><div>&nbsp;</div></b></span></font></div><!--WizHtmlContentEnd-->
+
+</div>
+</body>
+
+</html>
